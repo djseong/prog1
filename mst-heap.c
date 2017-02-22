@@ -1,10 +1,11 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <limits.h>
+#include <float.h> 
 
 struct heapNode {
   int vertex; 
-  int value; 
+  float value; 
 };
 
 struct minHeap {
@@ -13,7 +14,7 @@ struct minHeap {
   struct heapNode **array; 
 };
 
-struct heapNode* createMinNode (int vertex, int value) { 
+struct heapNode* createMinNode (int vertex, float value) { 
   struct heapNode* node = malloc(sizeof(struct heapNode)); 
   node->vertex = vertex; 
   node->value = value; 
@@ -31,7 +32,7 @@ struct minHeap* createMinHeap(int capacity) {
 void initializeHeap(struct minHeap* h) {
   int i; 
   for (i = 0; i < h->capacity; i++) {
-    h->array[i] = createMinNode(i, INT_MAX); 
+    h->array[i] = createMinNode(i, FLT_MAX); 
   }
   h->array[0]->value = 0;
   h->size = 1; 
@@ -96,11 +97,11 @@ int notInTree(int *s, int i) {
   }
 }
 
-void checkPrim(struct heapNode** p, int **g, int v) {
+void checkPrim(struct heapNode** p, float **g, int v) {
   int i; 
   for (i = 0; i < v; i++) {
     if (p[i]) {
-      printf("Vertex: %d to vertex %d with weight %d\n", i, (p[i]->vertex), g[p[i]->vertex][i]); 
+      printf("Vertex: %d to vertex %d with weight %f\n", i, (p[i]->vertex), g[p[i]->vertex][i]); 
     }
   }
 }
@@ -110,7 +111,7 @@ void printHeap(struct minHeap* h) {
   int s = h->size; 
   int p; 
   for (i = 0; i < s; i++) {
-    if (h->array[i]->value == INT_MAX) {
+    if (h->array[i]->value == FLT_MAX) {
       p = 100;
     }
     else {
@@ -124,7 +125,7 @@ void testHeap(struct minHeap* heap) {
   printf("original heap:\n"); 
   printHeap(heap); 
   struct heapNode* min = deleteMin(heap); 
-  printf("min extracted: %d\n", min->value); 
+  printf("min extracted: %f\n", min->value); 
   printHeap(heap); 
   struct heapNode* insert = malloc(sizeof(struct heapNode)); 
   insert->vertex = heap->size-1; 
@@ -134,20 +135,21 @@ void testHeap(struct minHeap* heap) {
   printHeap(heap); 
 }
 
-void prim(int **graph, int v) {
-  int dist[v]; 
+void prim(float **graph, int v) {
+  float dist[v]; 
   struct heapNode** prev = (struct heapNode**) malloc(sizeof(struct heapNode) * v); 
   struct heapNode* heap_v; 
-  int weight;
+  float weight;
   int s[v]; 
   int i; 
   for (i = 0; i < v; i++) {
-    dist[i] = INT_MAX; 
+    dist[i] = FLT_MAX; 
     prev[i] = NULL; 
   }
-  dist[0] = 0;
+  dist[0] = 0.0;
   struct minHeap* heap = createMinHeap(v); 
   initializeHeap(heap);
+
   while(!isEmpty(heap)) { 
     heap_v = deleteMin(heap); 
     s[heap_v->vertex] = 1;
@@ -169,7 +171,7 @@ void prim(int **graph, int v) {
 int main() {
   int i;
   int j; 
-  int **x; 
+  float **x; 
   int d = 5;
   x = malloc(d * sizeof(*x)); 
   for (i = 0; i < d; i++) {
