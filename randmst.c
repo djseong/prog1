@@ -22,7 +22,7 @@ float random_float(void)
 float distance(vertex point_a, vertex point_b, int dimension)
 {
     float sum = pow(point_a.x - point_b.x, 2);
-    
+
     if (dimension >= 2)
     {
         sum += pow(point_a.y - point_b.y, 2);
@@ -82,23 +82,23 @@ float** generate_matrix (int size, float **array, int dimension)
     int i,j;
     int counter = 1;
     vertex vertex_list [size];
-    
+
     // initializes array to all 0s
     for (i = 0; i < size; i++)
     {
-        for (j = 0; j < size; j++)
+        for (j = 0; j < size; j++) 
         {
             array[i][j] = 0.0;
         }
     }
-    
-    // for dimension 0, the weight of each edge is a random var
+
+        // for dimension 0, the weight of each edge is a random var
     if (dimension == 0)
     {
         // assigns a random float between 0 and 1 to upper triangle of array
         for (i = 0; i < size; i++)
         {
-            for (j = counter; j < size; j++)
+            for (j = counter; j < size; j++) 
             {
                 array[i][j] = random_float();
             }
@@ -113,7 +113,7 @@ float** generate_matrix (int size, float **array, int dimension)
         for (i = 0; i < size; i++)
         {
             vertex_list[i].x = random_float();
-            
+
             if (dimension >= 2)
             {
                 vertex_list[i].y = random_float();
@@ -127,34 +127,34 @@ float** generate_matrix (int size, float **array, int dimension)
                 vertex_list[i].w = random_float();
             }
         }
-        
+
         print_vertex_list(size, vertex_list, dimension);
         printf("\n");
-        
+
         counter = 0;
         // assigns top triangle of array to the corresponding distances between vertices
         for(i = 0; i < size - 1; i++)
         {
             for(j = counter; j < size; j++)
             {
-                array[i][j] = distance(vertex_list[i], vertex_list[j], dimension);
+                array[i][j] = distance(vertex_list[i], vertex_list[j], dimension); 
             }
             counter++;
         }
     }
     
-    
+
     //reflects upper triangle of array to lower triangle
     counter = 0;
     for (i = 0; i < size; i++)
     {
-        for (j = 0; j < counter; j++)
+        for (j = 0; j < counter; j++) 
         {
             array[i][j] = array[j][i];
         }
         counter++;
     }
-    
+
     return array;
 }
 
@@ -164,11 +164,11 @@ float** generate_matrix (int size, float **array, int dimension)
 int main( int argc, char *argv[] )
 {
     srand(time(NULL));
-    
+
     // sets commandline arguments to variables
     int numpoints = atoi(argv[1]);
     int dimension = atoi(argv[2]);
-    
+
     int size = numpoints;
     float **array;
     array = malloc(size * sizeof(*array));
@@ -178,9 +178,9 @@ int main( int argc, char *argv[] )
         array[i] = malloc(size * sizeof(**array));
     }
     
-    array = generate_matrix(size, array, dimension);
+    array = generate_matrix(size, array, dimension);   
     
-    print_array(size, array);
+    print_array(size, array);    
     
     return 0;
 }
