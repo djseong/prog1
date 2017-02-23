@@ -45,22 +45,29 @@ struct minHeap* createMinHeap(int capacity) {
   return heap; 
 }
 
-void initializeMinHeap(struct minHeap* h) {
-  int i; 
-  for (i = 0; i < h->capacity; i++) {
-    h->array[i] = createMinNode(i, FLT_MAX); 
-  }
-  h->array[0]->value = 0.0;
+void initializeMinHeap(struct minHeap* h, int* index) {
+  // int i; 
+  // for (i = 0; i < h->capacity; i++) {
+  //   struct heapNode* node = createMinNode(i, FLT_MAX); 
+  //   h->array[i] = node; 
+  //   index[i] = -1; 
+  // }
+  h->array[0] = createMinNode(0, 0); 
+  //h->array[0]->value = 0.0;
+  index[0] = 0; 
   h->size = 1; 
 }
   
-void swap(int a, int b, struct minHeap* h) {
+void swap(int a, int b, struct minHeap* h, int* index) {
+  int tempIndex = index[h->array[a]->vertex]; 
+  index[h->array[a]->vertex] = index[h->array[b]->vertex];
+  index[h->array[b]->vertex] = tempIndex; 
   struct heapNode* temp = h->array[a]; 
   h->array[a] = h->array[b]; 
   h->array[b] = temp;
 }
 
-void minHeapify(struct minHeap* minHeap, int root) {
+void minHeapify(struct minHeap* minHeap, int* index, int root) {
   int left = root * 2 + 1; 
   int right = root * 2 + 2; 
   int smallest = root; 
@@ -73,46 +80,49 @@ void minHeapify(struct minHeap* minHeap, int root) {
     smallest = right; 
   }
   if (smallest != root) {
-     swap(root, smallest, minHeap); 
-     minHeapify(minHeap, smallest); 
+     swap(root, smallest, minHeap, index); 
+     minHeapify(minHeap, index, smallest); 
   }
 }
 
-struct heapNode* heapDeleteMin(struct minHeap* h) {
+struct heapNode* heapDeleteMin(struct minHeap* h, int* index) {
   if (isHeapEmpty(h)) {
     return NULL; 
   }
   struct heapNode* min = h->array[0]; 
+  index[min->vertex] = -1; 
   struct heapNode* last = h->array[h->size - 1]; 
+  if (h->size != 1)
+    index[last->vertex] = 0; 
   h->array[0] = last;
   h->size--; 
-  minHeapify(h, 0); 
+  minHeapify(h, index, 0); 
   return min; 
 }
 
-void heapInsert(struct minHeap* h, struct heapNode* v, float old) {
+void heapInsert(struct minHeap* h, struct heapNode* v, int* index, int search) {
   int i; 
   int location; 
   int check = 0; 
-  
-  for (i = 0; i < h->size; i++) {
-    if (h->array[i]->value == old) {
-      h->array[i]->value = v->value; 
-      v = h->array[i];  
-      location = i; 
-      check = 1; 
-    }
+
+  int heapIndex = index[search]; 
+  if (heapIndex != -1) {
+    location = heapIndex; 
+    h->array[heapIndex]->value = v->value; 
+    v = h->array[heapIndex];
+    check = 1; 
   }
 
   if (check == 0) {
     h->size++; 
     location = h->size - 1;
-    h->array[h->size - 1] = v; 
+    h->array[location] = v; 
+    index[v->vertex] = location; 
   }
   
   int parent = location/2; 
   while (h->array[0] != v && h->array[parent]->value > v->value) {
-    swap(parent, location, h); 
+    swap(parent, location, h, index); 
     location = parent; 
     parent = location/2; 
   }
@@ -156,7 +166,7 @@ float sumPrim(struct heapNode **p, float **g, int v) {
 void testHeap(struct minHeap* heap) {
   printf("original heap:\n"); 
   printHeap(heap); 
-  struct heapNode* min = heapDeleteMin(heap); 
+  struct heapNode* min;// = heapDeleteMin(heap); 
   printf("min extracted: %f\n", min->value); 
   printHeap(heap); 
   struct heapNode* insert = malloc(sizeof(struct heapNode)); 
@@ -167,9 +177,16 @@ void testHeap(struct minHeap* heap) {
   printHeap(heap); 
 }
 
+void printIndex(int *index, int v) { 
+  int i; 
+  for (i = 0; i < v; i++) {
+    printf("vertex: %d at heap index: %d\n", i, index[i]);
+  }
+}
+
 float primHeap(float **graph, int v) {
   float dist[v]; 
-  struct heapNode** prev = (struct heapNode**) malloc(sizeof(struct heapNode) * v); 
+  int* index = malloc(sizeof(int) * v); 
   struct heapNode* heap_v; 
   float weight;
   float sum = 0.0; 
@@ -177,19 +194,21 @@ float primHeap(float **graph, int v) {
   int x; 
   for (x = 0; x < v; x++) {
     dist[x] = FLT_MAX; 
-    prev[x] = NULL; 
+    index[x] = -1; 
   }
   dist[0] = 0.0;
   struct minHeap* heap = createMinHeap(v); 
-  initializeMinHeap(heap);
+  initializeMinHeap(heap,index);
 
-  printf("initial heap:\n"); 
-  printHeap(heap); 
+  // printf("initial heap:\n"); 
+  // printHeap(heap); 
 
   while(!isHeapEmpty(heap)) { 
-    heap_v = heapDeleteMin(heap);
-    printf("deleted vertex: %d with value %f\n", heap_v->vertex, heap_v->value); 
-    printHeap(heap);
+    heap_v = heapDeleteMin(heap, index);
+    //printf("deleted vertex: %d with value %f\n", heap_v->vertex, heap_v->value); 
+    //printHeap(heap);
+    // printf("index after delete:\n"); 
+    // printIndex(index, v); 
     sum += heap_v->value; 
    // printf("%d\n", heap_v->vertex); 
     s[heap_v->vertex] = 1;
@@ -197,14 +216,15 @@ float primHeap(float **graph, int v) {
       weight = graph[heap_v->vertex][x];
       if (weight != 0 && heapNotInTree(s, x) == 1) {
         if (dist[x] > weight) {
-          float old = dist[x]; 
+          //float old = dist[x]; 
           dist[x] = weight;
-          prev[x] = heap_v; 
+          //prev[x] = heap_v; 
           struct heapNode* newnode = createMinNode(x, dist[x]);
-          heapInsert(heap, newnode, old);
-          printf("after insertion vertex %d value %f:\n", newnode->vertex, newnode->value);
-          printHeap(heap);   
-          //printf("%d\n", heap->size);
+          heapInsert(heap, newnode, index, x);
+          //printf("after insertion vertex %d value %f:\n", newnode->vertex, newnode->value);
+          //printHeap(heap);   
+          // printf("index after insert: \n"); 
+          // printIndex(index, v); 
         }
       }   
     }

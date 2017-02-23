@@ -130,7 +130,7 @@ float** generate_matrix (int size, float **array, int dimension)
             }
         }
         
-        print_vertex_list(size, vertex_list, dimension);
+        //print_vertex_list(size, vertex_list, dimension);
         // printf("\n");
         
         counter = 0;
@@ -182,7 +182,7 @@ int main( int argc, char *argv[] )
         array[i] = malloc(size * sizeof(**array));
     }
     
-    // array = generate_matrix(size, array, dimension);    
+ // array = generate_matrix(size, array, dimension);    
      //print_array(size, array);
       // printf("%n"); 
     // printf("Result for mst:\n");
@@ -190,7 +190,7 @@ int main( int argc, char *argv[] )
 
     for (i = 0; i < trials; i++) {
         array = generate_matrix(size, array, dimension); 
-        print_array(size, array); 
+        //print_array(size, array); 
         //printf("done generating\n"); 
         total += primHeap(array, size);
         //prim(array, size); 
