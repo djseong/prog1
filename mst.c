@@ -1,11 +1,12 @@
 #include <stdio.h> 
 #include <stdlib.h>
 #include <limits.h>
+#include <float.h>
 
-int deleteMin(int heap[], int v) {
+int deleteMin(float heap[], int v) {
   int i; 
   int minIndex = 0;
-  int minValue = INT_MAX; 
+  float minValue = FLT_MAX; 
   for (i = 0; i < v; i++) {
     if (heap[i] < minValue && heap[i] != -1) {
       minIndex = i; 
@@ -16,11 +17,11 @@ int deleteMin(int heap[], int v) {
   return minIndex; 
 }
 
-void insertHeap(int vertex, int distance, int heap[], int v) {
+void insertHeap(int vertex, float distance, float heap[], int v) {
   heap[vertex] = distance; 
 }
 
-int isEmpty(int heap[], int v) {
+int isEmpty(float heap[], int v) {
   int i; 
   for (i = 0; i < v; i++) {
     if (heap[i] != -1) {
@@ -30,12 +31,12 @@ int isEmpty(int heap[], int v) {
   return 0; 
 }
 
-void initializeHeap(int heap[], int v, int start) {
+void initializeHeap(float heap[], int v, int start) {
   int i; 
   for (i = 0; i < v; i++) {
     heap[i] = -1;
   }
-  heap[start] = 0; 
+  heap[start] = 0.0; 
 }
 
 int notInTree(int *s, int i) {
@@ -47,28 +48,28 @@ int notInTree(int *s, int i) {
   }
 }
 
-void checkPrim(int* p, int **g, int v) {
+void checkPrim(int* p, float **g, int v) {
   int i; 
   for (i = 0; i < v; i++) {
     if (p[i] != -1) {
-      printf("Vertex: %d to vertex %d with weight %d\n", i, p[i], g[p[i]][i]); 
+      printf("Vertex: %d to vertex %d with weight %f\n", i, p[i], g[p[i]][i]); 
     }
   }
 }
 
-void prim(int **graph, int v) {
-  int dist[v]; 
+void prim(float **graph, int v) {
+  float dist[v]; 
   int prev[v];
-  int heap[v]; 
+  float heap[v]; 
   int heap_v; 
-  int weight;
+  float weight;
   int s[v]; 
   int i; 
   for (i = 0; i < v; i++) {
-    dist[i] = INT_MAX; 
+    dist[i] = FLT_MAX; 
     prev[i] = -1; 
   }
-  dist[0] = 0;
+  dist[0] = 0.0;
   initializeHeap(heap, v, 0);
   // for (i = 0; i < v; i++) {
   //   printf("%d\n", heap[i]);
@@ -100,50 +101,50 @@ void prim(int **graph, int v) {
   checkPrim(prev, graph, v); 
 }
 
-int main() {
-  int i;
-  int j; 
-  int **x; 
-  int d = 5; 
-  x = malloc(d * sizeof(*x)); 
-  for (i = 0; i < d; i++) {
-    x[i] = malloc(d * sizeof(**x)); 
-  }
-  x[0][0] = 0; 
-  x[0][1] = 8; 
-  x[0][2] = 2; 
-  x[0][3] = 6;
-  x[0][4] = 7; 
-  x[1][0] = 8; 
-  x[1][1] = 0; 
-  x[1][2] = 4;
-  x[1][3] = 1;
-  x[1][4] = 8; 
-  x[2][0] = 2; 
-  x[2][1] = 4; 
-  x[2][2] = 0;
-  x[2][3] = 5;
-  x[2][4] = 9;
-  x[3][0] = 6; 
-  x[3][1] = 1; 
-  x[3][2] = 5; 
-  x[3][3] = 0;
-  x[3][4] = 10; 
-  x[4][0] = 7;
-  x[4][1] = 8;
-  x[4][2] = 9; 
-  x[4][3] = 10;  
-  // for (i = 0; i < d; i++) {
-  //   for (j = 0; j < d; j++) {
-  //     x[i][j] = 2;
-  //   }
-  // }
-  // for (i = 0; i < d; i++) {
-  //   printf("[");
-  //   for (j = 0; j < d; j++) {
-  //     printf("%d,", x[i][j]); 
-  //   }
-  //   printf("]\n");
-  // }
-  prim(x, d); 
-}
+// int main() {
+//   int i;
+//   int j; 
+//   int **x; 
+//   int d = 5; 
+//   x = malloc(d * sizeof(*x)); 
+//   for (i = 0; i < d; i++) {
+//     x[i] = malloc(d * sizeof(**x)); 
+//   }
+//   x[0][0] = 0; 
+//   x[0][1] = 8; 
+//   x[0][2] = 2; 
+//   x[0][3] = 6;
+//   x[0][4] = 7; 
+//   x[1][0] = 8; 
+//   x[1][1] = 0; 
+//   x[1][2] = 4;
+//   x[1][3] = 1;
+//   x[1][4] = 8; 
+//   x[2][0] = 2; 
+//   x[2][1] = 4; 
+//   x[2][2] = 0;
+//   x[2][3] = 5;
+//   x[2][4] = 9;
+//   x[3][0] = 6; 
+//   x[3][1] = 1; 
+//   x[3][2] = 5; 
+//   x[3][3] = 0;
+//   x[3][4] = 10; 
+//   x[4][0] = 7;
+//   x[4][1] = 8;
+//   x[4][2] = 9; 
+//   x[4][3] = 10;  
+//   // for (i = 0; i < d; i++) {
+//   //   for (j = 0; j < d; j++) {
+//   //     x[i][j] = 2;
+//   //   }
+//   // }
+//   // for (i = 0; i < d; i++) {
+//   //   printf("[");
+//   //   for (j = 0; j < d; j++) {
+//   //     printf("%d,", x[i][j]); 
+//   //   }
+//   //   printf("]\n");
+//   // }
+//   prim(x, d); 
+// }

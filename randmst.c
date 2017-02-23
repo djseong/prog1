@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include "mst-heap.c"
+#include "mst.c" 
 
 // struct for vertices with up to 4 dimensions
 typedef struct vertex {
@@ -127,10 +129,10 @@ float** generate_matrix (int size, float **array, int dimension)
                 vertex_list[i].w = random_float();
             }
         }
-
-        print_vertex_list(size, vertex_list, dimension);
-        printf("\n");
-
+        
+        //print_vertex_list(size, vertex_list, dimension);
+        // printf("\n");
+        
         counter = 0;
         // assigns top triangle of array to the corresponding distances between vertices
         for(i = 0; i < size - 1; i++)
@@ -167,8 +169,10 @@ int main( int argc, char *argv[] )
 
     // sets commandline arguments to variables
     int numpoints = atoi(argv[1]);
-    int dimension = atoi(argv[2]);
-
+    int dimension = atoi(argv[3]);
+    int trials = atoi(argv[2]); 
+    float total = 0.0; 
+    
     int size = numpoints;
     float **array;
     array = malloc(size * sizeof(*array));
@@ -178,9 +182,21 @@ int main( int argc, char *argv[] )
         array[i] = malloc(size * sizeof(**array));
     }
     
-    array = generate_matrix(size, array, dimension);   
-    
-    print_array(size, array);    
-    
+ // array = generate_matrix(size, array, dimension);    
+     //print_array(size, array);
+      // printf("%n"); 
+    // printf("Result for mst:\n");
+    // prim(array, size);
+
+    for (i = 0; i < trials; i++) {
+        array = generate_matrix(size, array, dimension); 
+        //print_array(size, array); 
+        //printf("done generating\n"); 
+        total += primHeap(array, size);
+        //prim(array, size); 
+    }
+
+    printf("Result for %d trials using mst heap: %f\n", trials, total/(float) trials); 
+
     return 0;
 }
