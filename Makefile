@@ -1,2 +1,2 @@
 randmst: randmst.c
-	gcc randmst.c -o randmst -lm
+	gcc randmst.c -o randmst -lm -g
