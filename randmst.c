@@ -42,18 +42,18 @@ float distance(vertex point_a, vertex point_b, int dimension)
 }
 */
 
-float distance(int dimension, float *list_a, float *list_b)
-{
-    float sum = 0;
+// float distance(int dimension, float *list_a, float *list_b)
+// {
+//     float sum = 0;
 
-    int i,j;
-    for (i = 0; i < dimension; i++)
-    {
-        sum += pow(list_a[i] - list_b[i], 2);
-    }
+//     int i,j;
+//     for (i = 0; i < dimension; i++)
+//     {
+//         sum += pow(list_a[i] - list_b[i], 2);
+//     }
     
-    return sqrt(sum);
-}
+//     return sqrt(sum);
+// }
 
 /*
 // prints array
@@ -249,7 +249,7 @@ int main( int argc, char *argv[] )
         array = generate_matrix(dim_num, numpoints, array);
         //print_array(dim_num, numpoints, array); 
         printf("done generating\n"); 
-        total += primHeap(array, numpoints);
+        total += primHeap(array, numpoints, dim_num);
         diff = clock() - start; 
         duration = diff/ CLOCKS_PER_SEC; 
         printf("Time taken for trial %d: %d\n", i, duration);

@@ -162,8 +162,10 @@ float sumPrim(struct heapNode **p, float **g, int v) {
   return sum; 
 } 
 
-float sqDistance(float x1, float y1, float x2, float y2) {
-  return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2)); 
+float distance(float x1, float y1, float z1, float d1,
+ float x2, float y2, float z2, float d2) {
+  return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2) + 
+    pow(z1 - z2, 2) + pow(d1 - d2, 2)); 
 }
 
 
@@ -189,7 +191,7 @@ void printIndex(int *index, int v) {
   }
 }
 
-float primHeap(float **graph, int v) {
+float primHeap(float **graph, int v, int d) {
   float dist[v]; 
   int* index = malloc(sizeof(int) * v); 
   struct heapNode* heap_v; 
@@ -220,8 +222,21 @@ float primHeap(float **graph, int v) {
    // printf("%d\n", heap_v->vertex); 
     s[heap_v->vertex] = 1;
     for (x = 0; x < v; x++) {
-      weight = sqDistance(graph[0][heap_v->vertex], 
-        graph[1][heap_v->vertex], graph[0][x], graph[1][x]);
+      if (d == 2) {
+      weight = distance(graph[0][heap_v->vertex], 
+        graph[1][heap_v->vertex], 0.0, 0.0, 
+        graph[0][x], graph[1][x], 0.0, 0.0);
+      }
+      else if (d == 3) {
+        weight = distance(graph[0][heap_v->vertex], 
+        graph[1][heap_v->vertex], graph[2][heap_v->vertex], 0.0, 
+        graph[0][x], graph[1][x], graph[2][x], 0.0);
+      }
+      else if (d == 4) {
+        weight = distance(graph[0][heap_v->vertex], 
+        graph[1][heap_v->vertex], graph[2][heap_v->vertex], graph[3][heap_v->vertex], 
+        graph[0][x], graph[1][x], graph[2][x], graph[3][x]);
+      }
      // weight = graph[heap_v->vertex][x];
       if (weight != 0 && heapNotInTree(s, x) == 1) {
         if (dist[x] > weight) {
