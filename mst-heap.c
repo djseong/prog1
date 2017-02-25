@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <float.h> 
+#include <math.h> 
 
 struct heapNode {
   int vertex; 
@@ -161,6 +162,10 @@ float sumPrim(struct heapNode **p, float **g, int v) {
   return sum; 
 } 
 
+float sqDistance(float x1, float y1, float x2, float y2) {
+  return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2)); 
+}
+
 
 
 void testHeap(struct minHeap* heap) {
@@ -210,10 +215,13 @@ float primHeap(float **graph, int v) {
     // printf("index after delete:\n"); 
     // printIndex(index, v); 
     sum += heap_v->value; 
+    printf("vertex: %d\n", heap_v->vertex); 
    // printf("%d\n", heap_v->vertex); 
     s[heap_v->vertex] = 1;
     for (x = 0; x < v; x++) {
-      weight = graph[heap_v->vertex][x];
+      weight = sqDistance(graph[0][heap_v->vertex], 
+        graph[1][heap_v->vertex], graph[0][x], graph[1][x]);
+     // weight = graph[heap_v->vertex][x];
       if (weight != 0 && heapNotInTree(s, x) == 1) {
         if (dist[x] > weight) {
           //float old = dist[x]; 
@@ -236,50 +244,57 @@ float primHeap(float **graph, int v) {
   return sum; 
 }
 
-// int main() {
-//   int i;
-//   int j; 
-//   float **x; 
-//   int d = 5;
-//   x = malloc(d * sizeof(*x)); 
-//   for (i = 0; i < d; i++) {
-//     x[i] = malloc(d * sizeof(**x)); 
-//   }
-//   x[0][0] = 0; 
-//   x[0][1] = 8; 
-//   x[0][2] = 2; 
-//   x[0][3] = 6;
-//   x[0][4] = 7; 
-//   x[1][0] = 8; 
-//   x[1][1] = 0; 
-//   x[1][2] = 4;
-//   x[1][3] = 1;
-//   x[1][4] = 8; 
-//   x[2][0] = 2; 
-//   x[2][1] = 4; 
-//   x[2][2] = 0;
-//   x[2][3] = 5;
-//   x[2][4] = 9;
-//   x[3][0] = 6; 
-//   x[3][1] = 1; 
-//   x[3][2] = 5; 
-//   x[3][3] = 0;
-//   x[3][4] = 10; 
-//   x[4][0] = 7;
-//   x[4][1] = 8;
-//   x[4][2] = 9; 
-//   x[4][3] = 10;  
-//   // for (i = 0; i < d; i++) {
-//   //   for (j = 0; j < d; j++) {
-//   //     x[i][j] = 2;
-//   //   }
-//   // }
-//   // for (i = 0; i < d; i++) {
-//   //   printf("[");
-//   //   for (j = 0; j < d; j++) {
-//   //     printf("%d,", x[i][j]); 
-//   //   }
-//   //   printf("]\n");
-//   // }
-//   prim(x, d); 
-// }
+int main() {
+  int i;
+  int j; 
+  float **x; 
+  int d = 4;
+  x = malloc(d * sizeof(*x)); 
+  for (i = 0; i < 2; i++) {
+    x[i] = malloc(d * sizeof(**x)); 
+  }
+  x[0][0] = 0.809272; 
+  x[0][1] = 0.668060; 
+  x[0][2] = 0.825339; 
+  x[0][3] = 0.464037;
+  x[1][0] = 0.852053; 
+  x[1][1] = 0.071834; 
+  x[1][2] = 0.403007;
+  x[1][3] = 0.019544;
+
+  // x = malloc(d * sizeof(*x)); 
+  // for (i = 0; i < d; i++) {
+  //   x[i] = malloc(d * sizeof(**x)); 
+  // }
+  
+  // x[0][0] = 0.; 
+  // x[0][1] = 0.79; 
+  // x[0][2] = 0.45; 
+  // x[0][3] = 0.9;
+  // x[1][0] = 0.79; 
+  // x[1][1] = 0.0; 
+  // x[1][2] = 0.36;
+  // x[1][3] = 0.52;
+  // x[2][0] = 0.45;
+  // x[2][1] = 0.36;
+  // x[2][2] = 0; 
+  // x[2][3] = 0.52; 
+  // x[3][0] = 0.9; 
+  // x[3][1] = 0.2; 
+  // x[3][2] = 0.52; 
+  // x[3][3] = 0; 
+
+  // for (i = 0; i < d; i++) {
+  //   for (j = 0; j < d; j++) {
+  //     x[i][j] = 2;
+  //   }
+  // }
+  // for (i = 0; i < d; i++) {
+  //   printf("[");
+  //   for (j = 0; j < d; j++) {
+  //     printf("%d,", x[i][j]); 
+  //   }
+  //   printf("]\n");
+  // }
+  printf("%f\n", primHeap(x, d)); 
+}
