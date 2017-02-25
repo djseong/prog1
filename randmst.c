@@ -20,11 +20,12 @@ float random_float(void)
 }
 
 
+/*
 // finds Euclidean distance between two points with the same dimension
 float distance(vertex point_a, vertex point_b, int dimension)
 {
     float sum = pow(point_a.x - point_b.x, 2);
-    
+
     if (dimension >= 2)
     {
         sum += pow(point_a.y - point_b.y, 2);
@@ -39,8 +40,22 @@ float distance(vertex point_a, vertex point_b, int dimension)
     }
     return sqrt(sum);
 }
+*/
 
+float distance(int dimension, float *list_a, float *list_b)
+{
+    float sum = 0;
 
+    int i,j;
+    for (i = 0; i < dimension; i++)
+    {
+        sum += pow(list_a[i] - list_b[i], 2);
+    }
+    
+    return sqrt(sum);
+}
+
+/*
 // prints array
 void print_array(int size, float **arr)
 {
@@ -54,7 +69,23 @@ void print_array(int size, float **arr)
         printf("\n");
     }
 }
+*/
 
+// prints array
+void print_array(int height, int width, float **arr)
+{
+    int i,j;
+    for (i = 0; i < height; i++)
+    {
+        for (j = 0; j < width; j++)
+        {
+            printf(" %f", arr[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+/*
 // prints vertex lists
 void print_vertex_list(int size, vertex vertex_list[size], int dimension)
 {
@@ -78,29 +109,31 @@ void print_vertex_list(int size, vertex vertex_list[size], int dimension)
     }
     printf("\n");
 }
+*/
 
+/*
 float** generate_matrix (int size, float **array, int dimension)
 {
     int i,j;
     int counter = 1;
     vertex vertex_list [size];
-    
+
     // initializes array to all 0s
     for (i = 0; i < size; i++)
     {
-        for (j = 0; j < size; j++)
+        for (j = 0; j < size; j++) 
         {
             array[i][j] = 0.0;
         }
     }
-    
-    // for dimension 0, the weight of each edge is a random var
+
+        // for dimension 0, the weight of each edge is a random var
     if (dimension == 0)
     {
         // assigns a random float between 0 and 1 to upper triangle of array
         for (i = 0; i < size; i++)
         {
-            for (j = counter; j < size; j++)
+            for (j = counter; j < size; j++) 
             {
                 array[i][j] = random_float();
             }
@@ -115,7 +148,7 @@ float** generate_matrix (int size, float **array, int dimension)
         for (i = 0; i < size; i++)
         {
             vertex_list[i].x = random_float();
-            
+
             if (dimension >= 2)
             {
                 vertex_list[i].y = random_float();
@@ -139,60 +172,81 @@ float** generate_matrix (int size, float **array, int dimension)
         {
             for(j = counter; j < size; j++)
             {
-                array[i][j] = distance(vertex_list[i], vertex_list[j], dimension);
+                array[i][j] = distance(vertex_list[i], vertex_list[j], dimension); 
             }
             counter++;
         }
     }
     
-    
+
     //reflects upper triangle of array to lower triangle
     counter = 0;
     for (i = 0; i < size; i++)
     {
-        for (j = 0; j < counter; j++)
+        for (j = 0; j < counter; j++) 
         {
             array[i][j] = array[j][i];
         }
         counter++;
     }
-    
+
     return array;
 }
+*/
 
+float** generate_matrix (int height, int width, float **arr)
+{
+    int i,j;   
+    for (i = 0; i < height; i++)
+    {
+        for (j = 0; j < width; j++)
+        {
+            arr[i][j] = random_float();
+        }
+    }
+    
+    return arr;
+}
 
 
 
 int main( int argc, char *argv[] )
 {
     srand(time(NULL));
-    
+
     // sets commandline arguments to variables
     int numpoints = atoi(argv[1]);
-    int dimension = atoi(argv[3]);
-    int trials = atoi(argv[2]); 
+    int trials = atoi(argv[2]);
+    int dimension = atoi(argv[3]); 
     float total = 0.0; 
-    
-    int size = numpoints;
-    float **array;
-    array = malloc(size * sizeof(*array));
-    int i;
-    for (i = 0; i < size; i++)
+
+    // for the case where dimension == 0, we will generate one list, but we will treat it differently
+    // than we would treat a dimensoion 2 list
+    int dim_num = dimension;
+    if (dimension == 0)
     {
-        array[i] = malloc(size * sizeof(**array));
+        dim_num = 1;
+    }
+
+    float **array;
+    array = malloc(numpoints * sizeof(*array));
+    int i;
+    for (i = 0; i < numpoints; i++)
+    {
+        array[i] = malloc(dim_num * sizeof(**array));
     }
     
- // array = generate_matrix(size, array, dimension);    
-     //print_array(size, array);
-      // printf("%n"); 
+    // array = generate_matrix(size, array, dimension);    
+    //print_array(size, array);
+    // printf("%n"); 
     // printf("Result for mst:\n");
     // prim(array, size);
 
     for (i = 0; i < trials; i++) {
-        array = generate_matrix(size, array, dimension); 
+        array = generate_matrix(numpoints, dim_num, array);
         //print_array(size, array); 
         //printf("done generating\n"); 
-        total += primHeap(array, size);
+        total += primHeap(array, numpoints);
         //prim(array, size); 
     }
 
