@@ -163,7 +163,7 @@ float** generate_matrix (int size, float **array, int dimension)
             }
         }
         
-        //print_vertex_list(size, vertex_list, dimension);
+        print_vertex_list(size, vertex_list, dimension);
         // printf("\n");
         
         counter = 0;
@@ -229,11 +229,11 @@ int main( int argc, char *argv[] )
     }
 
     float **array;
-    array = malloc(numpoints * sizeof(*array));
+    array = malloc(dim_num * sizeof(*array));
     int i;
-    for (i = 0; i < numpoints; i++)
+    for (i = 0; i < dim_num; i++)
     {
-        array[i] = malloc(dim_num * sizeof(**array));
+        array[i] = malloc(numpoints * sizeof(**array));
     }
     
     // array = generate_matrix(size, array, dimension);    
@@ -241,12 +241,18 @@ int main( int argc, char *argv[] )
     // printf("%n"); 
     // printf("Result for mst:\n");
     // prim(array, size);
-
+    clock_t start; 
+    clock_t diff; 
+    int duration = 0; 
     for (i = 0; i < trials; i++) {
-        array = generate_matrix(numpoints, dim_num, array);
-        //print_array(size, array); 
-        //printf("done generating\n"); 
+        start = clock(); 
+        array = generate_matrix(dim_num, numpoints, array);
+        //print_array(dim_num, numpoints, array); 
+        printf("done generating\n"); 
         total += primHeap(array, numpoints);
+        diff = clock() - start; 
+        duration = diff/ CLOCKS_PER_SEC; 
+        printf("Time taken for trial %d: %d\n", i, duration);
         //prim(array, size); 
     }
 

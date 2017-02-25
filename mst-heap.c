@@ -200,6 +200,7 @@ float primHeap(float **graph, int v) {
   for (x = 0; x < v; x++) {
     dist[x] = FLT_MAX; 
     index[x] = -1; 
+    s[x] = 0;
   }
   dist[0] = 0.0;
   struct minHeap* heap = createMinHeap(v); 
@@ -215,7 +216,7 @@ float primHeap(float **graph, int v) {
     // printf("index after delete:\n"); 
     // printIndex(index, v); 
     sum += heap_v->value; 
-    printf("vertex: %d\n", heap_v->vertex); 
+    //printf("vertex: %d\n", heap_v->vertex); 
    // printf("%d\n", heap_v->vertex); 
     s[heap_v->vertex] = 1;
     for (x = 0; x < v; x++) {
@@ -244,57 +245,57 @@ float primHeap(float **graph, int v) {
   return sum; 
 }
 
-int main() {
-  int i;
-  int j; 
-  float **x; 
-  int d = 4;
-  x = malloc(d * sizeof(*x)); 
-  for (i = 0; i < 2; i++) {
-    x[i] = malloc(d * sizeof(**x)); 
-  }
-  x[0][0] = 0.809272; 
-  x[0][1] = 0.668060; 
-  x[0][2] = 0.825339; 
-  x[0][3] = 0.464037;
-  x[1][0] = 0.852053; 
-  x[1][1] = 0.071834; 
-  x[1][2] = 0.403007;
-  x[1][3] = 0.019544;
+// int main() {
+//   int i;
+//   int j; 
+//   float **x; 
+//   int d = 4;
+//   x = malloc(d * sizeof(*x)); 
+//   for (i = 0; i < 2; i++) {
+//     x[i] = malloc(d * sizeof(**x)); 
+//   }
+//   x[0][0] = 0.809272; 
+//   x[0][1] = 0.668060; 
+//   x[0][2] = 0.825339; 
+//   x[0][3] = 0.464037;
+//   x[1][0] = 0.852053; 
+//   x[1][1] = 0.071834; 
+//   x[1][2] = 0.403007;
+//   x[1][3] = 0.019544;
 
-  // x = malloc(d * sizeof(*x)); 
-  // for (i = 0; i < d; i++) {
-  //   x[i] = malloc(d * sizeof(**x)); 
-  // }
+//   // x = malloc(d * sizeof(*x)); 
+//   // for (i = 0; i < d; i++) {
+//   //   x[i] = malloc(d * sizeof(**x)); 
+//   // }
   
-  // x[0][0] = 0.; 
-  // x[0][1] = 0.79; 
-  // x[0][2] = 0.45; 
-  // x[0][3] = 0.9;
-  // x[1][0] = 0.79; 
-  // x[1][1] = 0.0; 
-  // x[1][2] = 0.36;
-  // x[1][3] = 0.52;
-  // x[2][0] = 0.45;
-  // x[2][1] = 0.36;
-  // x[2][2] = 0; 
-  // x[2][3] = 0.52; 
-  // x[3][0] = 0.9; 
-  // x[3][1] = 0.2; 
-  // x[3][2] = 0.52; 
-  // x[3][3] = 0; 
+//   // x[0][0] = 0.; 
+//   // x[0][1] = 0.79; 
+//   // x[0][2] = 0.45; 
+//   // x[0][3] = 0.9;
+//   // x[1][0] = 0.79; 
+//   // x[1][1] = 0.0; 
+//   // x[1][2] = 0.36;
+//   // x[1][3] = 0.52;
+//   // x[2][0] = 0.45;
+//   // x[2][1] = 0.36;
+//   // x[2][2] = 0; 
+//   // x[2][3] = 0.52; 
+//   // x[3][0] = 0.9; 
+//   // x[3][1] = 0.2; 
+//   // x[3][2] = 0.52; 
+//   // x[3][3] = 0; 
 
-  // for (i = 0; i < d; i++) {
-  //   for (j = 0; j < d; j++) {
-  //     x[i][j] = 2;
-  //   }
-  // }
-  // for (i = 0; i < d; i++) {
-  //   printf("[");
-  //   for (j = 0; j < d; j++) {
-  //     printf("%d,", x[i][j]); 
-  //   }
-  //   printf("]\n");
-  // }
-  printf("%f\n", primHeap(x, d)); 
-}
+//   // for (i = 0; i < d; i++) {
+//   //   for (j = 0; j < d; j++) {
+//   //     x[i][j] = 2;
+//   //   }
+//   // }
+//   // for (i = 0; i < d; i++) {
+//   //   printf("[");
+//   //   for (j = 0; j < d; j++) {
+//   //     printf("%d,", x[i][j]); 
+//   //   }
+//   //   printf("]\n");
+//   // }
+//   printf("%f\n", primHeap(x, d)); 
+// }
