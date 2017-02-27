@@ -56,9 +56,9 @@ int main( int argc, char *argv[] )
     int flag = atoi(argv[1]);
     int numpoints = atoi(argv[2]);
     int trials = atoi(argv[3]);
-    int dimension = atoi(argv[4]);
-    float total = 0.0;
-    
+    int dimension = atoi(argv[4]); 
+    float total = 0.0; 
+
     // for the case where dimension == 0, we will generate one list, but we will treat it differently
     // than we would treat a dimensoion 2 list
     int dim_num = dimension;
@@ -74,12 +74,12 @@ int main( int argc, char *argv[] )
     {
         array[i] = malloc(numpoints * sizeof(**array));
     }
-    int result = -2;
-    int free_num = dim_num;
-    FILE *fp = stdout;
-    if (flag == 1) {
-        result = 0;
-        fp = fopen("result.txt", "a");
+    int result = -2; 
+    int free_num = dim_num; 
+    FILE *fp = stdout; 
+   if (flag == 1) {
+        result = 0; 
+        fp = fopen("result.txt", "a"); 
         if (fp == NULL) {
             printf("error\n");
             return -1;
@@ -90,11 +90,11 @@ int main( int argc, char *argv[] )
     }
     do {
         if (result == 1)
-            result = 2;
-        total = 0.0;
-        clock_t start;
-        clock_t diff;
-        int duration = 0;
+            result = 2; 
+        total = 0.0; 
+        clock_t start; 
+        clock_t diff; 
+        int duration = 0; 
         if (flag == 1)
             free_num = result;
         array = malloc(free_num * sizeof(*array));
@@ -106,20 +106,20 @@ int main( int argc, char *argv[] )
             array[i] = malloc(numpoints * sizeof(**array));
         }
         for (i = 0; i < trials; i++) {
-            start = clock();
+            start = clock(); 
             if (flag == 1) {
-                array = generate_matrix(result, numpoints, array);
+                array = generate_matrix(result, numpoints, array); 
                 total += primHeap(array, numpoints, result);
             }
             else {
-                array = generate_matrix(dim_num, numpoints, array);
+                array = generate_matrix(dim_num, numpoints, array); 
                 total += primHeap(array, numpoints, dimension);
             }
-            diff = clock() - start;
-            duration = diff/ CLOCKS_PER_SEC;
+            diff = clock() - start; 
+            duration = diff/ CLOCKS_PER_SEC; 
             if (flag == 1) {
                 fprintf(fp, "%s %s %s %s %d %s %d\n",
-                        "Time", "taken", "for", "trial", i+1, ":", duration);
+                "Time", "taken", "for", "trial", i+1, ":", duration);
             }
         }
         if (flag == 1) {
@@ -130,10 +130,10 @@ int main( int argc, char *argv[] )
         }
         for (i = 0; i < free_num; i++)
         {
-            free(array[i]);
+            free(array[i]); 
         }
-        free(array);
-        result++;
+        free(array); 
+        result++; 
     } while (result > 0 && result < 5);
     return 0;
 }
