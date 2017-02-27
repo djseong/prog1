@@ -3,7 +3,6 @@
 #include <time.h>
 #include <math.h>
 #include "mst-heap.c"
-#include "mst.c" 
 
 // struct for vertices with up to 4 dimensions
 typedef struct vertex {
