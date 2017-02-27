@@ -59,23 +59,15 @@ int main( int argc, char *argv[] )
     int dimension = atoi(argv[4]); 
     float total = 0.0; 
 
-    // for the case where dimension == 0, we will generate one list, but we will treat it differently
-    // than we would treat a dimensoion 2 list
-    int dim_num = dimension;
-    if (dimension == 0)
-    {
-        dim_num = 1;
-    }
-    
     float **array;
-    array = malloc(dim_num * sizeof(*array));
+    array = malloc(dimension * sizeof(*array));
     int i;
-    for (i = 0; i < dim_num; i++)
+    for (i = 0; i < dimension; i++)
     {
         array[i] = malloc(numpoints * sizeof(**array));
     }
     int result = -2; 
-    int free_num = dim_num; 
+    int free_num = dimension;
     FILE *fp = stdout; 
    if (flag == 1) {
         result = 0; 
@@ -112,7 +104,7 @@ int main( int argc, char *argv[] )
                 total += primHeap(array, numpoints, result);
             }
             else {
-                array = generate_matrix(dim_num, numpoints, array); 
+                array = generate_matrix(dimension, numpoints, array);
                 total += primHeap(array, numpoints, dimension);
             }
             diff = clock() - start; 
