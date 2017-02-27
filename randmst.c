@@ -51,7 +51,7 @@ float distance(vertex point_a, vertex point_b, int dimension)
 //     {
 //         sum += pow(list_a[i] - list_b[i], 2);
 //     }
-    
+ 
 //     return sqrt(sum);
 // }
 
@@ -215,9 +215,10 @@ int main( int argc, char *argv[] )
     srand(time(NULL));
 
     // sets commandline arguments to variables
-    int numpoints = atoi(argv[1]);
-    int trials = atoi(argv[2]);
-    int dimension = atoi(argv[3]); 
+    int flag = atoi(argv[1]);
+    int numpoints = atoi(argv[2]);
+    int trials = atoi(argv[3]);
+    int dimension = atoi(argv[4]); 
     float total = 0.0; 
 
     // for the case where dimension == 0, we will generate one list, but we will treat it differently
@@ -241,22 +242,60 @@ int main( int argc, char *argv[] )
     // printf("%n"); 
     // printf("Result for mst:\n");
     // prim(array, size);
-    clock_t start; 
-    clock_t diff; 
-    int duration = 0; 
-    for (i = 0; i < trials; i++) {
-        start = clock(); 
-        array = generate_matrix(dim_num, numpoints, array);
-        //print_array(dim_num, numpoints, array); 
-        printf("done generating\n"); 
-        total += primHeap(array, numpoints, dim_num);
-        diff = clock() - start; 
-        duration = diff/ CLOCKS_PER_SEC; 
-        printf("Time taken for trial %d: %d\n", i, duration);
-        //prim(array, size); 
+    int result = -2; 
+    int free_num = dim_num; 
+    FILE *fp = stdout; 
+   if (flag == 1) {
+        result = 0; 
+        fp = fopen("result.txt", "a"); 
+        if (fp == NULL) {
+            printf("error\n");
+            return -1; 
+        }
     }
-
-    printf("Result for %d trials using mst heap: %f\n", trials, total/(float) trials); 
-
+    fprintf(fp, "%s %d %d %d %d\n", "./randmst", flag, numpoints, trials, dimension);
+    do {
+        if (result == 1)
+            result = 2; 
+        total = 0.0; 
+        clock_t start; 
+        clock_t diff; 
+        int duration = 0; 
+        if (flag == 1)
+            free_num = result; 
+        array = malloc(free_num * sizeof(*array));
+        fprintf(fp, "%d %s\n", free_num, "dimension");
+        for (i = 0; i < free_num; i++)
+        {
+            array[i] = malloc(numpoints * sizeof(**array));
+        }
+        for (i = 0; i < trials; i++) {
+            start = clock(); 
+            //array = generate_matrix(dim_num, numpoints, array);
+            //print_array(dim_num, numpoints, array); 
+            //fprintf(fp, "%s %s", "done", "generating\n"); 
+            if (flag == 1) {
+                array = generate_matrix(result, numpoints, array); 
+                total += primHeap(array, numpoints, result);
+            }
+            else {
+                array = generate_matrix(dim_num, numpoints, array); 
+                total += primHeap(array, numpoints, dimension);
+            }
+            diff = clock() - start; 
+            duration = diff/ CLOCKS_PER_SEC; 
+            fprintf(fp, "%s %s %s %s %d %s %d\n",
+                "Time", "taken", "for", "trial", i+1, ":", duration);
+        }
+        fprintf(fp, "%s %s %d %s %s %f\n", "Result", "for", trials, "trials", ":", total/(float)trials); 
+        //result++;
+        for (i = 0; i < free_num; i++)
+        {
+            free(array[i]); 
+        }
+        free(array); 
+        result++; 
+        printf("done\n");
+    }while (result > 0 && result < 5); 
     return 0;
 }
