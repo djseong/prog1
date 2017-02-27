@@ -4,19 +4,20 @@
 #include <float.h> 
 #include <math.h> 
 
-int counter = 0; 
-
+// Data structure for a node in heap
 struct heapNode {
   int vertex; 
   float value; 
 };
 
+// Data structure for min heap
 struct minHeap {
   int size; 
   int capacity;
   struct heapNode **array; 
 };
 
+// Debugging function to print heap
 void printHeap(struct minHeap* h) {
   int i; 
   int s = h->size; 
@@ -33,14 +34,15 @@ void printHeap(struct minHeap* h) {
   printf("size: %d\n", h->size); 
 }
 
+// Create min heap node
 struct heapNode* createMinNode (int v, float val) {
-  counter++;  
   struct heapNode* node = malloc(sizeof(struct heapNode)); 
   node->vertex = v; 
   node->value = val; 
   return node; 
 }
 
+// Create min heap
 struct minHeap* createMinHeap(int capacity) {
   struct minHeap* heap = malloc(sizeof(struct minHeap)); 
   heap->size = 0;
@@ -49,19 +51,14 @@ struct minHeap* createMinHeap(int capacity) {
   return heap; 
 }
 
+// Put first vertex into heap
 void initializeMinHeap(struct minHeap* h, int* index) {
-  // int i; 
-  // for (i = 0; i < h->capacity; i++) {
-  //   struct heapNode* node = createMinNode(i, FLT_MAX); 
-  //   h->array[i] = node; 
-  //   index[i] = -1; 
-  // }
   h->array[0] = createMinNode(0, 0); 
-  //h->array[0]->value = 0.0;
   index[0] = 0; 
   h->size = 1; 
 }
   
+// Swap two nodes in heap
 void swap(int a, int b, struct minHeap* h, int* index) {
   int tempIndex = index[h->array[a]->vertex]; 
   index[h->array[a]->vertex] = index[h->array[b]->vertex];
@@ -110,18 +107,16 @@ void heapInsert(struct minHeap* h, float dist, int* index, int search) {
   int check = 0; 
   struct heapNode* track; 
 
+  // If node exists in tree, update it
   int heapIndex = index[search]; 
   if (heapIndex != -1) {
     location = heapIndex; 
     h->array[heapIndex]->value = dist; 
-   // struct heapNode* temp = v; 
-    //free(v);
-    //counter--; 
-    //v = h->array[heapIndex];
     track = h->array[heapIndex]; 
     check = 1; 
   }
 
+  // Else malloc new node
   if (check == 0) {
     struct heapNode* newnode = createMinNode(search, dist);
     h->size++; 
@@ -143,6 +138,7 @@ int isHeapEmpty(struct minHeap* h) {
   return (h->size == 0); 
 }
 
+// Check if node is in mst
 int heapNotInTree(int *s, int i) {
   if (s[i] == 1) {
     return 0;
@@ -152,48 +148,14 @@ int heapNotInTree(int *s, int i) {
   }
 }
 
-void heapCheckPrim(struct heapNode** p, float **g, int v) {
-  int i; 
-  for (i = 0; i < v; i++) {
-    if (p[i]) {
-      printf("Vertex: %d to vertex %d with weight %f\n", i, (p[i]->vertex), g[p[i]->vertex][i]); 
-    }
-  }
-}
-
-float sumPrim(struct heapNode **p, float **g, int v) {
-  int i; 
-  float sum = 0.0; 
-  for (i = 0; i < v; i++) {
-    if (p[i]) {
-       sum += g[p[i]->vertex][i];
-    }
-  }
-  return sum; 
-} 
-
+// Calculate distance up to 4th dimension
 float distance(float x1, float y1, float z1, float d1,
  float x2, float y2, float z2, float d2) {
   return sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2) + 
     pow(z1 - z2, 2) + pow(d1 - d2, 2)); 
 }
 
-
-
-void testHeap(struct minHeap* heap) {
-  printf("original heap:\n"); 
-  printHeap(heap); 
-  struct heapNode* min;// = heapDeleteMin(heap); 
-  printf("min extracted: %f\n", min->value); 
-  printHeap(heap); 
-  struct heapNode* insert = malloc(sizeof(struct heapNode)); 
-  insert->vertex = heap->size-1; 
-  insert->value = 1; 
-//heapInsert(heap, insert); 
-  printf("after insertion:\n");
-  printHeap(heap); 
-}
-
+// Debugging function to print index array
 void printIndex(int *index, int v) { 
   int i; 
   for (i = 0; i < v; i++) {
@@ -201,6 +163,7 @@ void printIndex(int *index, int v) {
   }
 }
 
+// Prim's algorithim
 float primHeap(float **graph, int v, int d) {
   float dist[v]; 
   int* index = malloc(sizeof(int) * v); 
@@ -209,7 +172,6 @@ float primHeap(float **graph, int v, int d) {
   float sum = 0.0; 
   int s[v]; 
   int x; 
-  float deleted[v]; 
   int id = 0; 
   for (x = 0; x < v; x++) {
     dist[x] = FLT_MAX; 
@@ -219,26 +181,15 @@ float primHeap(float **graph, int v, int d) {
   dist[0] = 0.0;
   struct minHeap* heap = createMinHeap(v); 
   initializeMinHeap(heap,index);
-
-   //printf("initial heap:\n"); 
-   //printHeap(heap); 
-
   while(!isHeapEmpty(heap)) { 
     heap_v = heapDeleteMin(heap, index);
-    deleted[id] = heap_v->value; 
     id++; 
-    //printf("deleted vertex: %d with value %f\n", heap_v->vertex, heap_v->value); 
-    //printHeap(heap);
-     //printf("index after delete:\n"); 
-    // printIndex(index, v); 
     sum += heap_v->value; 
-   // printf("vertex: %d\n", heap_v->vertex); 
-    //printf("%d\n", heap_v->vertex); 
     s[heap_v->vertex] = 1;
     for (x = 0; x < v; x++) {
+      // Find weight in appropriate dimension
       if (d == 0) {
         weight = (float) rand() / ((float) RAND_MAX);
-        //printf("weight: %f\n", weight); 
       }
       if (d == 2) {
         weight = distance(graph[0][heap_v->vertex], 
@@ -255,37 +206,18 @@ float primHeap(float **graph, int v, int d) {
         graph[1][heap_v->vertex], graph[2][heap_v->vertex], graph[3][heap_v->vertex], 
         graph[0][x], graph[1][x], graph[2][x], graph[3][x]);
       }
-     // weight = graph[heap_v->vertex][x];
       if (weight != 0 && heapNotInTree(s, x) == 1) {
         if (dist[x] > weight) {
-          //float old = dist[x]; 
           dist[x] = weight;
-          //prev[x] = heap_v; 
-          //struct heapNode* newnode = createMinNode(x, dist[x]);
           heapInsert(heap, dist[x], index, x);
-          //printf("after insertion vertex %d value %f:\n", x, dist[x]);
-          //printHeap(heap);   
-           //printf("index after insert: \n"); 
-           //printIndex(index, v); 
         }
       }   
     }
     free(heap_v); 
-    counter--;  
   }
   free(index);
-  //printf("counter: %d\n:", counter);  
-  // for (x = 0; x < v; x++) {
-  //   if (heap->array[x] && s[heap->array[x]->vertex] != 1)
-  //     free(heap->array[x]); 
-  // }
   free(heap->array); 
   free(heap); 
-  // printf("deleted elements:\n"); 
-  // for (x = 0; x < v; x++) 
-  //   printf("%f\n", deleted[x]); 
-  //heapCheckPrim(prev, graph, v); 
-  //return sumPrim(prev, graph, v); 
   return sum; 
 }
 

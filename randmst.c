@@ -236,12 +236,6 @@ int main( int argc, char *argv[] )
     {
         array[i] = malloc(numpoints * sizeof(**array));
     }
-    
-    // array = generate_matrix(size, array, dimension);    
-    //print_array(size, array);
-    // printf("%n"); 
-    // printf("Result for mst:\n");
-    // prim(array, size);
     int result = -2; 
     int free_num = dim_num; 
     FILE *fp = stdout; 
@@ -253,7 +247,9 @@ int main( int argc, char *argv[] )
             return -1; 
         }
     }
-    fprintf(fp, "%s %d %d %d %d\n", "./randmst", flag, numpoints, trials, dimension);
+    if (flag == 1) {
+        fprintf(fp, "%s %d %d %d %d\n", "./randmst", flag, numpoints, trials, dimension);
+    }
     do {
         if (result == 1)
             result = 2; 
@@ -264,16 +260,15 @@ int main( int argc, char *argv[] )
         if (flag == 1)
             free_num = result; 
         array = malloc(free_num * sizeof(*array));
-        fprintf(fp, "%d %s\n", free_num, "dimension");
+        if (flag == 1) {
+            fprintf(fp, "%d %s\n", free_num, "dimension");
+        }
         for (i = 0; i < free_num; i++)
         {
             array[i] = malloc(numpoints * sizeof(**array));
         }
         for (i = 0; i < trials; i++) {
             start = clock(); 
-            //array = generate_matrix(dim_num, numpoints, array);
-            //print_array(dim_num, numpoints, array); 
-            //fprintf(fp, "%s %s", "done", "generating\n"); 
             if (flag == 1) {
                 array = generate_matrix(result, numpoints, array); 
                 total += primHeap(array, numpoints, result);
@@ -284,18 +279,23 @@ int main( int argc, char *argv[] )
             }
             diff = clock() - start; 
             duration = diff/ CLOCKS_PER_SEC; 
-            fprintf(fp, "%s %s %s %s %d %s %d\n",
+            if (flag == 1) {
+                fprintf(fp, "%s %s %s %s %d %s %d\n",
                 "Time", "taken", "for", "trial", i+1, ":", duration);
+            }
         }
-        fprintf(fp, "%s %s %d %s %s %f\n", "Result", "for", trials, "trials", ":", total/(float)trials); 
-        //result++;
+        if (flag == 1) {
+            fprintf(fp, "%s %s %d %s %s %f\n", "Result", "for", trials, "trials", ":", total/(float)trials); 
+        }
+        else {
+            fprintf(fp, "%f %d %d %d\n", total/(float)trials, numpoints, trials, dimension);
+        }
         for (i = 0; i < free_num; i++)
         {
             free(array[i]); 
         }
         free(array); 
         result++; 
-        printf("done\n");
-    }while (result > 0 && result < 5); 
+    } while (result > 0 && result < 5); 
     return 0;
 }
